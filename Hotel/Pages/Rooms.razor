@@ -1,0 +1,199 @@
+﻿@page "/"
+@page "/rooms"
+@using Hotel.HttpClients.ClientInterfaces
+@using Hotel.Data
+@inject IRoomService roomService;
+@inject IReservationService reservationService;
+<h3>Rooms</h3>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            Room
+        </th>
+        <th>
+            Quantity
+        </th>
+        <th>
+            Action
+        </th>
+    </tr>
+    </thead>
+
+    <tbody>
+    @foreach (var room in rooms)
+    {
+        <tr>
+            <td>
+                @room.Name
+            </td>
+            <td>
+                @room.NumberOfPeople
+            </td>
+            <td>
+                <button class="orderBtn" @onclick="() => ShowReserveComponent(room)">Reserve</button>
+            </td>
+        </tr>
+    }
+    </tbody>
+
+</table>
+
+
+@if (showReserveComponent)
+{
+    <div class="modal fade show" id="myModal" style="display:block; background-color: rgba(10,10,10,.8);" aria-modal="true" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Reserve</h4>
+                    <label @onclick="@(ExitComponent)" style="cursor:pointer; color: red; font-weight: bold">
+                        @*A cross icon*@
+                        &#x2717;
+                    </label>
+                </div>
+
+                <div class="container">
+                    <div class="roomName">
+                        <div class="col-12">
+                            <label>Room: @roomPopUpOffer.Name</label>
+                        </div>
+                    </div>
+
+                    <div class="dateFrom">
+                        <div class="col-6">
+                            <label>Date from: </label>
+                        </div>
+                        <div class="col-4">
+                            <input type="date" @bind="dateFrom" class="form-control"/>
+                        </div>
+                    </div>
+
+                    <div class="dateTo">
+                        <div class="col-6">
+                            <label>Date to: </label>
+                        </div>
+                        <div class="col-4">
+                            <input type="date" @bind="dateTo" class="form-control"/>
+                        </div>
+                    </div>
+
+                    <div class="nrOfPeople">
+                        <div class="row">
+                            <div class="col-4">
+                                <label>Number of people: </label>
+                            </div>
+                            <div class="col-6">
+                                <input @bind="numberOfPeople"/>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-6">
+                        <div class="buttons">
+                            <div class="col-">
+                                <button class="addToCartBtn" @onclick="Reserve">Reserve</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    @if (message is not null)
+                    {
+                        <span style="color: red">@message</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    List<Room> rooms = new();
+
+    private int roomName;
+    private DateTime dateFrom;
+    private DateTime dateTo;
+    private int numberOfPeople;
+    private Room roomPopUpOffer;
+    private string? message;
+
+    bool showReserveComponent;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        rooms = (List<Room>)await roomService.GetAsync();
+    }
+
+    private void ShowReserveComponent(Room room)
+    {
+        roomPopUpOffer = room;
+        showReserveComponent = true;
+    }
+
+    private void ExitComponent()
+    {
+        message = "";
+        showReserveComponent = false;
+    }
+
+    private async Task Reserve()
+    {
+        message = "e";
+        if (ValidateData())
+        {
+            try
+            {
+                var res = new Reservation(dateFrom, dateTo, numberOfPeople, roomPopUpOffer.Id);
+
+                var resCreated = await reservationService.ReserveAsync(res);
+
+                message = "Room was successfully booked. Email sent to test@admin.com for created reservation with id:  " + resCreated.Id;
+                Console.WriteLine(message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                message = e.Message;
+            }
+        }
+    }
+
+    private bool ValidateData()
+    {
+        if (dateFrom < DateTime.Today)
+        {
+            message = "The room should be booked at least from today's date";
+            return false;
+        }
+
+        if (dateFrom >= dateTo)
+        {
+            message = "The start date should be before end date";
+            return false;
+        }
+
+        if (numberOfPeople <= 0)
+        {
+            message = "Number of people should be more than 0";
+            return false;
+        }
+
+        if (numberOfPeople > roomPopUpOffer.NumberOfPeople)
+        {
+            message = "The room does not have this capacity. Maximum: " + roomPopUpOffer.NumberOfPeople + " people.";
+            return false;
+        }
+
+
+        return true;
+    }
+
+}

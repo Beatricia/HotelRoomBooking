@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hotel", "Hotel\Hotel.csproj", "{592FC4FA-F01E-4094-A552-9E7D6ECC5E2D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPI", "WebAPI\WebAPI.csproj", "{D5D26CDD-2CA4-4EC1-AC45-178CF525FD83}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{592FC4FA-F01E-4094-A552-9E7D6ECC5E2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{592FC4FA-F01E-4094-A552-9E7D6ECC5E2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{592FC4FA-F01E-4094-A552-9E7D6ECC5E2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{592FC4FA-F01E-4094-A552-9E7D6ECC5E2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5D26CDD-2CA4-4EC1-AC45-178CF525FD83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5D26CDD-2CA4-4EC1-AC45-178CF525FD83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5D26CDD-2CA4-4EC1-AC45-178CF525FD83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5D26CDD-2CA4-4EC1-AC45-178CF525FD83}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
